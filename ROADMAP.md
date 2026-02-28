@@ -39,7 +39,7 @@ Way is a 100% procedurally generated battle-kart racing game built in Go 1.24+ w
 1. **Track generator** — Spline-based circuit with control-point jitter, elevation changes (±30 m), loop/ramp segments, shortcut branches, and hazard zones. Output: waypoint graph + mesh descriptor. *AC: All five genres produce visually distinct tracks; no self-intersecting geometry at any seed.*
 2. **Vehicle physics** — Arcade kart model: acceleration, braking, lateral grip, drift (oversteer on button hold), boost bar (fills on drift). Runs server-side authoritatively. *AC: Drift boost activates in < 3 s of sustained drift; `go test ./pkg/engine/physics/...` covers edge cases.*
 3. **Kart PCG** — Procedural kart body shapes, colour palettes, and names keyed to genre. Stats (speed, handling, weight) vary per seed. *AC: Five distinct kart silhouettes per genre; stat ranges documented and enforced.*
-4. **Runtime renderer** — Pixel-art sprite generation for track tiles, kart sprites, particles (dust, boost flame, item explosion). No PNG/BMP files. *AC: `grep -r 'embed' pkg/rendering/` returns zero non-font matches.*
+4. **Runtime renderer** — Pixel-art sprite generation for track tiles, kart sprites, particles (dust, boost flame, item explosion). No PNG/BMP files. *AC: `grep -R "go:embed" .` returns zero matches in `pkg/rendering/` (any asset embedding is confined to explicitly documented packages such as `pkg/font/...`).*
 
 ### Phase 3 — Items, Hazards & Audio (Weeks 10–14)
 **Focus:** Battle items, track hazards, procedural audio.
