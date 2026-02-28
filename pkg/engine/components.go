@@ -40,12 +40,12 @@ type RacePositionComponent struct {
 
 // CameraComponent defines the camera position and perspective mode.
 type CameraComponent struct {
-	TargetEntity Entity
-	OffsetX      float64
-	OffsetY      float64
-	OffsetZ      float64
-	Perspective  string // Must be "over-the-shoulder"
-	Distance     float64
-	Height       float64
-	Angle        float64
+	TargetEntity Entity  // Entity to follow (typically the player kart)
+	Perspective  string  // Must be "over-the-shoulder"
+	Distance     float64 // Distance behind the target entity
+	Height       float64 // Height above the target entity
+	Angle        float64 // Camera tilt angle in degrees
+	PositionX    float64 // Current camera world X position
+	PositionY    float64 // Current camera world Y position
+	PositionZ    float64 // Current camera world Z position
 }

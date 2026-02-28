@@ -57,9 +57,13 @@ func (s *CameraSystem) Update(w *World, dt float64) {
 
 		// Update camera position based on target entity
 		if target, ok := w.Transforms[cam.TargetEntity]; ok {
-			_ = target
-			_ = e
-			_ = dt
+			// Calculate camera position behind and above the target
+			// Using simple offset for now - will be enhanced with rotation in future
+			cam.PositionX = target.X - cam.Distance
+			cam.PositionY = target.Y
+			cam.PositionZ = target.Z + cam.Height
 		}
+		_ = e
+		_ = dt
 	}
 }
