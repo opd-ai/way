@@ -4,6 +4,8 @@
 
 Way is a 100% procedurally generated battle-kart racing game built in Go 1.24+ with Ebiten v2, forming the W-Series successor to V-Series projects (`opd-ai/venture`, `opd-ai/vania`, `opd-ai/violence`, `opd-ai/velocity`). Inspired by Diddy Kong Racing, Mario Kart, Rocket League, and SuperTuxKart, Way exceeds V-Series depth with procedural 3D-ish tracks featuring elevation, loops, shortcuts, and weather; emergent vehicle physics with drifting and boost; competitive multiplayer with item targeting and rubber-banding AI; and dynamic procedural audio including engine sounds, Doppler effects, and crowd noise. All content — tracks, karts, items, audio, visuals, and narrative — is generated at runtime from a deterministic seed with zero embedded assets, fully themed across five genres: **fantasy, sci-fi, horror, cyberpunk, post-apocalyptic**.
 
+**Camera Perspective:** Way mandates an **over-the-shoulder** visual perspective for all gameplay. This third-person camera view is positioned behind and slightly above the player's kart, providing optimal forward visibility while maintaining spatial awareness. The camera system tracks the player entity, automatically adjusting position based on kart movement and orientation.
+
 ## Core Architecture
 
 **ECS Design:** Entities are integer IDs. Components (`TransformComponent`, `VehiclePhysicsComponent`, `ItemHolderComponent`, `RacePositionComponent`) are pure structs stored in typed slices. Systems (`PhysicsSystem`, `ItemSystem`, `RaceSystem`, `RenderSystem`, `NetworkSystem`) iterate components and contain all logic — no methods on component types.
@@ -16,7 +18,8 @@ Way is a 100% procedurally generated battle-kart racing game built in Go 1.24+ w
 | `RaceSystem` | Lap counting, position ranking, rubber-banding AI, finish detection |
 | `ItemSystem` | Item box pickup, targeting logic, hit validation, cooldowns |
 | `TrackSystem` | Waypoint graph traversal, shortcut activation, hazard triggers |
-| `RenderSystem` | Runtime sprite/tile/particle/post-processing generation pipeline |
+| `CameraSystem` | Enforces over-the-shoulder perspective, tracks player entity position |
+| `RenderSystem` | Runtime sprite/tile/particle/post-processing generation pipeline with over-the-shoulder view |
 | `AudioSystem` | Procedural engine sounds, Doppler, adaptive music, SFX |
 | `NetworkSystem` | Authoritative server, client prediction, reconciliation, interpolation |
 | `PCGSystem` | Drives all generators via `Generator.Generate(seed, params)` interface |
@@ -29,9 +32,10 @@ Way is a 100% procedurally generated battle-kart racing game built in Go 1.24+ w
 **Focus:** Project scaffold, ECS core, deterministic PCG seed system, single-binary build.
 
 1. **Project scaffold** — `cmd/client/`, `cmd/server/`, `pkg/engine/`, `pkg/procgen/`, `pkg/rendering/`, `pkg/audio/`, `pkg/network/` mirroring V-Series layout. Single `go.mod`. *AC: `go build ./...` succeeds with zero assets on disk.*
-2. **ECS world** — `World` type with entity creation/deletion, typed component stores, system registration, and fixed-timestep tick loop at 60 Hz. *AC: 10 000 entities tick in < 2 ms on reference hardware; `go test ./pkg/engine/...` passes.*
+2. **ECS world** — `World` type with entity creation/deletion, typed component stores (`TransformComponent`, `VehiclePhysicsComponent`, `CameraComponent`), system registration, and fixed-timestep tick loop at 60 Hz. *AC: 10 000 entities tick in < 2 ms on reference hardware; `go test ./pkg/engine/...` passes.*
 3. **PCG seed pipeline** — `Generator` interface (`Generate(seed int64, params GenerationParams) (interface{}, error)` + `Validate()`), `GenreID` constants for all five genres, deterministic PRNG wrapper. *AC: Same seed + genre produces byte-identical output across 100 consecutive calls.*
 4. **Single-binary build** — All generated content embedded via `go:generate` hooks or computed at init; no external file reads at runtime. *AC: Running `way` from an otherwise empty working directory under a syscall tracer (`strace`/`dtruss`/platform equivalent) shows zero asset file `open`/`openat` calls; optional OS-specific dependency checks (`ldd way`, `otool -L way`, `dumpbin /DEPENDENTS way.exe`) show only code libraries, and the binary runs from any working directory.*
+5. **Camera system** — `CameraComponent` and `CameraSystem` enforce mandatory over-the-shoulder perspective for all gameplay. Camera tracks player entity with configurable distance, height, and angle. *AC: Camera perspective cannot be changed from "over-the-shoulder"; camera follows player entity smoothly.*
 
 ### Phase 2 — Track & Vehicle PCG (Weeks 5–9)
 **Focus:** Procedural track generation, vehicle physics, kart PCG.
@@ -39,7 +43,7 @@ Way is a 100% procedurally generated battle-kart racing game built in Go 1.24+ w
 1. **Track generator** — Spline-based circuit with control-point jitter, elevation changes (±30 m), loop/ramp segments, shortcut branches, and hazard zones. Output: waypoint graph + mesh descriptor. *AC: All five genres produce visually distinct tracks; no self-intersecting geometry at any seed.*
 2. **Vehicle physics** — Arcade kart model: acceleration, braking, lateral grip, drift (oversteer on button hold), boost bar (fills on drift). Runs server-side authoritatively. *AC: Drift boost activates in < 3 s of sustained drift; `go test ./pkg/engine/physics/...` covers edge cases.*
 3. **Kart PCG** — Procedural kart body shapes, colour palettes, and names keyed to genre. Stats (speed, handling, weight) vary per seed. *AC: Five distinct kart silhouettes per genre; stat ranges documented and enforced.*
-4. **Runtime renderer** — Pixel-art sprite generation for track tiles, kart sprites, particles (dust, boost flame, item explosion). No PNG/BMP files. *AC: `grep -R "go:embed" .` returns zero matches in `pkg/rendering/` (any asset embedding is confined to explicitly documented packages such as `pkg/font/...`).*
+4. **Runtime renderer** — Pixel-art sprite generation for track tiles, kart sprites, particles (dust, boost flame, item explosion). Renders from over-the-shoulder camera perspective. No PNG/BMP files. *AC: `grep -R "go:embed" .` returns zero matches in `pkg/rendering/` (any asset embedding is confined to explicitly documented packages such as `pkg/font/...`); over-the-shoulder perspective enforced in all rendering.*
 
 ### Phase 3 — Items, Hazards & Audio (Weeks 10–14)
 **Focus:** Battle items, track hazards, procedural audio.

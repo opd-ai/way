@@ -1,5 +1,7 @@
 package engine
 
+import "math"
+
 // PhysicsSystem handles vehicle movement, drifting, boost, and collision.
 type PhysicsSystem struct{}
 
@@ -43,4 +45,40 @@ type TrackSystem struct{}
 func (s *TrackSystem) Update(w *World, dt float64) {
 	_ = w
 	_ = dt
+}
+
+// CameraSystem updates camera position and enforces over-the-shoulder perspective.
+type CameraSystem struct{}
+
+func (s *CameraSystem) Update(w *World, dt float64) {
+	for e, cam := range w.Cameras {
+		// Enforce over-the-shoulder perspective
+		if cam.Perspective != "over-the-shoulder" {
+			cam.Perspective = "over-the-shoulder"
+		}
+
+		// Update camera position based on target entity
+		if target, ok := w.Transforms[cam.TargetEntity]; ok {
+			// Calculate camera position behind and above the target
+			// Account for target rotation to keep camera behind the kart
+			targetAngleRad := target.Rotation
+
+			// Convert camera tilt angle from degrees to radians
+			cameraTiltRad := cam.Angle * (math.Pi / 180.0)
+
+			// Calculate horizontal offset (behind the kart)
+			horizontalDist := cam.Distance * math.Cos(cameraTiltRad)
+			offsetX := -horizontalDist * math.Cos(targetAngleRad)
+			offsetY := -horizontalDist * math.Sin(targetAngleRad)
+
+			// Calculate vertical offset (height above plus tilt contribution)
+			verticalOffset := cam.Distance * math.Sin(cameraTiltRad)
+
+			cam.PositionX = target.X + offsetX
+			cam.PositionY = target.Y + offsetY
+			cam.PositionZ = target.Z + cam.Height + verticalOffset
+		}
+		_ = e
+		_ = dt
+	}
 }

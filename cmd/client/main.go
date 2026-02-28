@@ -51,11 +51,24 @@ func main() {
 	world.AddSystem(&engine.RaceSystem{})
 	world.AddSystem(&engine.ItemSystem{})
 	world.AddSystem(&engine.TrackSystem{})
+	world.AddSystem(&engine.CameraSystem{})
 	world.AddSystem(&procgen.PCGSystem{})
 	world.AddSystem(&audio.AudioSystem{})
 	world.AddSystem(&network.NetworkSystem{})
 
-	renderer := &rendering.RenderSystem{}
+	// Create main camera with mandatory over-the-shoulder perspective
+	cameraEntity := world.CreateEntity()
+	world.Cameras[cameraEntity] = &engine.CameraComponent{
+		TargetEntity: 0, // Will be updated to actual player entity when created
+		Perspective:  cfg.Camera.Perspective,
+		Distance:     cfg.Camera.Distance,
+		Height:       cfg.Camera.Height,
+		Angle:        cfg.Camera.Angle,
+	}
+
+	renderer := &rendering.RenderSystem{
+		CameraEntity: cameraEntity,
+	}
 	world.AddSystem(renderer)
 
 	game := &Game{
