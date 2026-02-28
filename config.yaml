@@ -1,0 +1,13 @@
+window:
+  width: 800
+  height: 600
+  title: "Way"
+
+server:
+  address: ":7777"
+  tick_rate_hz: 20
+
+game:
+  seed: 0
+  genre: 0        # 0=Fantasy, 1=SciFi, 2=Horror, 3=Cyberpunk, 4=PostApocalyptic
+  difficulty: 1.0
