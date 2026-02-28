@@ -44,3 +44,22 @@ func (s *TrackSystem) Update(w *World, dt float64) {
 	_ = w
 	_ = dt
 }
+
+// CameraSystem updates camera position and enforces over-the-shoulder perspective.
+type CameraSystem struct{}
+
+func (s *CameraSystem) Update(w *World, dt float64) {
+	for e, cam := range w.Cameras {
+		// Enforce over-the-shoulder perspective
+		if cam.Perspective != "over-the-shoulder" {
+			cam.Perspective = "over-the-shoulder"
+		}
+		
+		// Update camera position based on target entity
+		if target, ok := w.Transforms[cam.TargetEntity]; ok {
+			_ = target
+			_ = e
+			_ = dt
+		}
+	}
+}

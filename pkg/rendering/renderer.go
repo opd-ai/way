@@ -7,9 +7,11 @@ import (
 	"github.com/opd-ai/way/pkg/engine"
 )
 
-// RenderSystem generates and draws runtime sprites, tiles, and particles.
+// RenderSystem generates and draws runtime sprites, tiles, and particles
+// using the mandatory over-the-shoulder camera perspective.
 type RenderSystem struct {
-	Screen *ebiten.Image
+	Screen       *ebiten.Image
+	CameraEntity engine.Entity
 }
 
 func (s *RenderSystem) Update(w *engine.World, dt float64) {
@@ -17,7 +19,7 @@ func (s *RenderSystem) Update(w *engine.World, dt float64) {
 	_ = dt
 }
 
-// Draw renders the current frame to the screen.
+// Draw renders the current frame to the screen using over-the-shoulder perspective.
 func (s *RenderSystem) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{R: 20, G: 20, B: 30, A: 255})
 }

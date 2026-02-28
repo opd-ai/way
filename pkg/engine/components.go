@@ -37,3 +37,15 @@ type RacePositionComponent struct {
 	Finished   bool
 	RaceTime   float64
 }
+
+// CameraComponent defines the camera position and perspective mode.
+type CameraComponent struct {
+	TargetEntity Entity
+	OffsetX      float64
+	OffsetY      float64
+	OffsetZ      float64
+	Perspective  string // Must be "over-the-shoulder"
+	Distance     float64
+	Height       float64
+	Angle        float64
+}

@@ -9,6 +9,7 @@ type Config struct {
 	Window  WindowConfig  `mapstructure:"window"`
 	Server  ServerConfig  `mapstructure:"server"`
 	Game    GameConfig    `mapstructure:"game"`
+	Camera  CameraConfig  `mapstructure:"camera"`
 }
 
 // WindowConfig holds display settings.
@@ -31,6 +32,14 @@ type GameConfig struct {
 	Difficulty float64 `mapstructure:"difficulty"`
 }
 
+// CameraConfig holds camera perspective settings.
+type CameraConfig struct {
+	Perspective string  `mapstructure:"perspective"`
+	Distance    float64 `mapstructure:"distance"`
+	Height      float64 `mapstructure:"height"`
+	Angle       float64 `mapstructure:"angle"`
+}
+
 // Load reads configuration from file, applying defaults.
 func Load() (*Config, error) {
 	viper.SetConfigName("config")
@@ -46,6 +55,10 @@ func Load() (*Config, error) {
 	viper.SetDefault("game.seed", 0)
 	viper.SetDefault("game.genre", 0)
 	viper.SetDefault("game.difficulty", 1.0)
+	viper.SetDefault("camera.perspective", "over-the-shoulder")
+	viper.SetDefault("camera.distance", 5.0)
+	viper.SetDefault("camera.height", 2.0)
+	viper.SetDefault("camera.angle", 15.0)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {

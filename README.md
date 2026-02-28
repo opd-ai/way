@@ -2,6 +2,10 @@
 
 Procedurally generated battle-kart racing game built in Go with Ebitengine.
 
+## Visual Perspective
+
+Way uses a mandatory **over-the-shoulder** gameplay perspective for all racing gameplay. This camera view provides an immersive third-person perspective positioned behind and slightly above the player's kart, offering optimal visibility of the track ahead while maintaining awareness of the kart's position and orientation.
+
 ## Directory Structure
 
 ```
@@ -38,6 +42,8 @@ go build ./cmd/server
 ## Configuration
 
 Configuration is loaded from `config.yaml` in the working directory or `$HOME/.way/config.yaml`. All values have sensible defaults and the application runs without a config file present.
+
+The camera perspective is mandated to be "over-the-shoulder" and cannot be changed. Camera distance, height, and angle can be adjusted in the configuration file.
 
 See `config.yaml` for available options.
 

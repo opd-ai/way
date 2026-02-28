@@ -16,6 +16,7 @@ type World struct {
 	Vehicles    map[Entity]*VehiclePhysicsComponent
 	Items       map[Entity]*ItemHolderComponent
 	Positions   map[Entity]*RacePositionComponent
+	Cameras     map[Entity]*CameraComponent
 	systems     []System
 	TickRate    float64
 	accumulator float64
@@ -30,6 +31,7 @@ func NewWorld() *World {
 		Vehicles:   make(map[Entity]*VehiclePhysicsComponent),
 		Items:      make(map[Entity]*ItemHolderComponent),
 		Positions:  make(map[Entity]*RacePositionComponent),
+		Cameras:    make(map[Entity]*CameraComponent),
 		systems:    make([]System, 0),
 		TickRate:   1.0 / 60.0,
 	}
@@ -55,6 +57,7 @@ func (w *World) DeleteEntity(e Entity) {
 	delete(w.Vehicles, e)
 	delete(w.Items, e)
 	delete(w.Positions, e)
+	delete(w.Cameras, e)
 }
 
 // AddSystem registers a system for the tick loop.

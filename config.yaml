@@ -11,3 +11,9 @@ game:
   seed: 0
   genre: 0        # 0=Fantasy, 1=SciFi, 2=Horror, 3=Cyberpunk, 4=PostApocalyptic
   difficulty: 1.0
+
+camera:
+  perspective: "over-the-shoulder"  # Mandatory over-the-shoulder gameplay view
+  distance: 5.0                      # Distance behind the player kart
+  height: 2.0                        # Height above the kart
+  angle: 15.0                        # Camera tilt angle in degrees
