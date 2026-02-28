@@ -59,7 +59,7 @@ func main() {
 	// Create main camera with mandatory over-the-shoulder perspective
 	cameraEntity := world.CreateEntity()
 	world.Cameras[cameraEntity] = &engine.CameraComponent{
-		TargetEntity: 1, // Will be updated to actual player entity when created
+		TargetEntity: 0, // Will be updated to actual player entity when created
 		Perspective:  cfg.Camera.Perspective,
 		Distance:     cfg.Camera.Distance,
 		Height:       cfg.Camera.Height,
