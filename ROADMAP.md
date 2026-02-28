@@ -31,7 +31,7 @@ Way is a 100% procedurally generated battle-kart racing game built in Go 1.24+ w
 1. **Project scaffold** — `cmd/client/`, `cmd/server/`, `pkg/engine/`, `pkg/procgen/`, `pkg/rendering/`, `pkg/audio/`, `pkg/network/` mirroring V-Series layout. Single `go.mod`. *AC: `go build ./...` succeeds with zero assets on disk.*
 2. **ECS world** — `World` type with entity creation/deletion, typed component stores, system registration, and fixed-timestep tick loop at 60 Hz. *AC: 10 000 entities tick in < 2 ms on reference hardware; `go test ./pkg/engine/...` passes.*
 3. **PCG seed pipeline** — `Generator` interface (`Generate(seed int64, params GenerationParams) (interface{}, error)` + `Validate()`), `GenreID` constants for all five genres, deterministic PRNG wrapper. *AC: Same seed + genre produces byte-identical output across 100 consecutive calls.*
-4. **Single-binary build** — All generated content embedded via `go:generate` hooks or computed at init; no external file reads at runtime. *AC: `ldd way` shows no asset paths; binary runs from any working directory.*
+4. **Single-binary build** — All generated content embedded via `go:generate` hooks or computed at init; no external file reads at runtime. *AC: Running `way` from an otherwise empty working directory under a syscall tracer (`strace`/`dtruss`/platform equivalent) shows zero asset file `open`/`openat` calls; optional OS-specific dependency checks (`ldd way`, `otool -L way`, `dumpbin /DEPENDENTS way.exe`) show only code libraries, and the binary runs from any working directory.*
 
 ### Phase 2 — Track & Vehicle PCG (Weeks 5–9)
 **Focus:** Procedural track generation, vehicle physics, kart PCG.
