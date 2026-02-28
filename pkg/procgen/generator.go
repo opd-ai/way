@@ -4,7 +4,7 @@ package procgen
 type GenreID int
 
 const (
-	GenreFantasy        GenreID = iota
+	GenreFantasy GenreID = iota
 	GenreSciFi
 	GenreHorror
 	GenreCyberpunk

@@ -54,7 +54,7 @@ func (s *CameraSystem) Update(w *World, dt float64) {
 		if cam.Perspective != "over-the-shoulder" {
 			cam.Perspective = "over-the-shoulder"
 		}
-		
+
 		// Update camera position based on target entity
 		if target, ok := w.Transforms[cam.TargetEntity]; ok {
 			_ = target

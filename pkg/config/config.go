@@ -6,10 +6,10 @@ import (
 
 // Config holds all application configuration.
 type Config struct {
-	Window  WindowConfig  `mapstructure:"window"`
-	Server  ServerConfig  `mapstructure:"server"`
-	Game    GameConfig    `mapstructure:"game"`
-	Camera  CameraConfig  `mapstructure:"camera"`
+	Window WindowConfig `mapstructure:"window"`
+	Server ServerConfig `mapstructure:"server"`
+	Game   GameConfig   `mapstructure:"game"`
+	Camera CameraConfig `mapstructure:"camera"`
 }
 
 // WindowConfig holds display settings.
