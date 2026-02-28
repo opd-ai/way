@@ -30,7 +30,12 @@ func main() {
 		TickRateHz: cfg.Server.TickRateHz,
 	})
 
-	log.Printf("server listening on %s at %d Hz", cfg.Server.Address, cfg.Server.TickRateHz)
+	if cfg.Server.TickRateHz <= 0 {
+		fmt.Fprintf(os.Stderr, "config: server.tick_rate_hz must be > 0, got %d\n", cfg.Server.TickRateHz)
+		os.Exit(1)
+	}
+
+	log.Printf("starting server loop at %d Hz (configured address: %s)", cfg.Server.TickRateHz, cfg.Server.Address)
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)

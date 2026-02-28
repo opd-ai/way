@@ -63,12 +63,26 @@ func (w *World) AddSystem(s System) {
 }
 
 // Tick advances the world by dt seconds using fixed-timestep accumulation.
+// Delta time is clamped to avoid spiral-of-death after long pauses.
 func (w *World) Tick(dt float64) {
+	const maxAccumulated = 0.25
+	if dt > maxAccumulated {
+		dt = maxAccumulated
+	}
+
 	w.accumulator += dt
-	for w.accumulator >= w.TickRate {
+
+	const maxStepsPerTick = 5
+	steps := 0
+	for w.accumulator >= w.TickRate && steps < maxStepsPerTick {
 		for _, s := range w.systems {
 			s.Update(w, w.TickRate)
 		}
 		w.accumulator -= w.TickRate
+		steps++
+	}
+
+	if steps == maxStepsPerTick {
+		w.accumulator = 0
 	}
 }

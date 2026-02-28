@@ -20,6 +20,6 @@ type GenerationParams struct {
 
 // Generator is the interface all procedural generators implement.
 type Generator interface {
-	Generate(seed int64, params GenerationParams) (interface{}, error)
+	Generate(params GenerationParams) (interface{}, error)
 	Validate() error
 }

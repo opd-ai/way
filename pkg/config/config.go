@@ -31,7 +31,7 @@ type GameConfig struct {
 	Difficulty float64 `mapstructure:"difficulty"`
 }
 
-// Load reads configuration from file and environment, applying defaults.
+// Load reads configuration from file, applying defaults.
 func Load() (*Config, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
