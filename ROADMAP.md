@@ -123,7 +123,7 @@ Way is a 100% procedurally generated battle-kart racing game built in Go 1.24+ w
 
 | Indicator | Target | Measurement |
 |-----------|--------|-------------|
-| Zero embedded assets | 0 non-font `embed` directives | `grep -r 'go:embed' pkg/ cmd/ \| grep -v font` returns empty |
+| No embedded assets (fonts excepted) | 0 `//go:embed` directives outside `pkg/font/` | `grep -R "go:embed" pkg/ cmd/` returns zero matches outside `pkg/font/` |
 | Deterministic PCG | Identical output for same seed + genre | 100-run idempotency test in `go test` |
 | 8-player multiplayer | Race completes with 8 clients at 0 ms simulated latency | Integration test in `cmd/server/` |
 | High-latency playable | Race finishes correctly at 2000 ms simulated RTT | Netcode integration test with `tc netem` |
